@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About | Dark Knight Fan Log</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black: #0a0a0a;
+      --card: #1a1a1a;
+      --card2: #161616;
+      --yellow: #f5d400;
+      --yellow-dim: #c9ab00;
+      --gray: #444;
+      --lightgray: #888;
+      --text: #e0e0e0;
+      --text-sub: #999;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Noto Sans JP", sans-serif;
+      background-color: var(--black);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    header {
+      position: relative;
+      padding: 36px 20px 24px;
+      text-align: center;
+      border-bottom: 1px solid #222;
+      overflow: hidden;
+    }
+
+    header::after {
+      content: "";
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(245,212,0,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .bat-logo {
+      font-size: 48px;
+      line-height: 1;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 0 12px rgba(245,212,0,0.5));
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { filter: drop-shadow(0 0 8px rgba(245,212,0,0.4)); }
+      50%       { filter: drop-shadow(0 0 22px rgba(245,212,0,0.8)); }
+    }
+
+    header h1 {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 42px;
+      letter-spacing: 6px;
+      color: var(--yellow);
+      text-shadow: 0 0 30px rgba(245,212,0,0.3);
+    }
+
+    header p.tagline {
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--lightgray);
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      margin-top: 18px;
+    }
+
+    nav a {
+      color: var(--lightgray);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      bottom: -3px;
+      left: 0; right: 0;
+      height: 1px;
+      background: var(--yellow);
+      transform: scaleX(0);
+      transition: transform 0.2s;
+    }
+
+    nav a:hover { color: var(--yellow); }
+    nav a:hover::after { transform: scaleX(1); }
+    nav a.active { color: var(--yellow); }
+    nav a.active::after { transform: scaleX(1); }
+
+    /* ── Container ── */
+    .container {
+      position: relative;
+      z-index: 1;
+      padding: 48px 20px 60px;
+      max-width: 720px;
+      margin: auto;
+    }
+
+    /* ── Intro ── */
+    .intro-card {
+      padding: 24px 28px;
+      border-left: 3px solid var(--yellow);
+      background: rgba(245,212,0,0.03);
+      margin-bottom: 48px;
+    }
+
+    .intro-card h2 {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 22px;
+      letter-spacing: 3px;
+      color: var(--yellow);
+      margin-bottom: 12px;
+    }
+
+    .intro-card p {
+      font-size: 13.5px;
+      line-height: 2;
+      color: var(--text-sub);
+    }
+
+    .intro-card p + p { margin-top: 10px; }
+
+    /* ── Section heading ── */
+    .section h2.section-head {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 22px;
+      letter-spacing: 4px;
+      color: var(--yellow);
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .section h2.section-head::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(to right, var(--gray), transparent);
+    }
+
+    .section { margin-bottom: 46px; }
+
+    /* ── Link grid ── */
+    .link-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    @media (max-width: 480px) { .link-grid { grid-template-columns: 1fr; } }
+
+    .link-card {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      background: var(--card);
+      border: 1px solid #222;
+      border-radius: 4px;
+      padding: 13px 14px;
+      transition: border-color 0.2s, background 0.2s;
+    }
+    .link-card:hover {
+      border-color: var(--yellow-dim);
+      background: #1e1e1e;
+    }
+
+    .link-icon {
+      font-size: 20px;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--card2);
+      border: 1px solid #222;
+      border-radius: 4px;
+      flex-shrink: 0;
+    }
+
+    .link-text { flex: 1; min-width: 0; }
+
+    .link-name {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 2px;
+    }
+    .link-card:hover .link-name { color: var(--yellow); }
+
+    .link-desc {
+      display: block;
+      font-size: 11px;
+      color: #666;
+      line-height: 1.5;
+    }
+
+    .link-arrow {
+      font-size: 16px;
+      color: var(--gray);
+      flex-shrink: 0;
+      transition: transform 0.2s, color 0.2s;
+    }
+    .link-card:hover .link-arrow {
+      transform: translateX(3px);
+      color: var(--yellow);
+    }
+
+    /* ── Form ── */
+    .form-card {
+      background: var(--card);
+      border: 1px solid #222;
+      border-radius: 4px;
+      padding: 28px 28px 24px;
+    }
+
+    .form-intro {
+      font-size: 13px;
+      color: var(--text-sub);
+      line-height: 1.9;
+      margin-bottom: 20px;
+    }
+
+    .form-group { margin-bottom: 18px; }
+
+    .form-label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--yellow);
+      opacity: 0.85;
+      margin-bottom: 8px;
+    }
+
+    .required { color: var(--yellow); margin-left: 3px; }
+
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      background: var(--black);
+      border: 1px solid #2a2a2a;
+      border-radius: 3px;
+      color: var(--text);
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 13.5px;
+      padding: 10px 13px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .form-input::placeholder,
+    .form-textarea::placeholder { color: #444; }
+    .form-input:focus,
+    .form-textarea:focus {
+      border-color: var(--yellow);
+      box-shadow: 0 0 0 3px rgba(245,212,0,0.08);
+    }
+
+    .form-textarea {
+      resize: vertical;
+      min-height: 130px;
+    }
+
+    .field-error {
+      display: block;
+      font-size: 11px;
+      color: #e9536b;
+      margin-top: 5px;
+    }
+
+    .form-submit {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--yellow);
+      border: none;
+      border-radius: 3px;
+      color: #0a0a0a;
+      font-family: "Noto Sans JP", sans-serif;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 1.5px;
+      padding: 11px 28px;
+      cursor: pointer;
+      margin-top: 4px;
+      transition: background 0.15s;
+    }
+    .form-submit:hover { background: #fff; }
+    .form-submit:disabled { opacity: .5; cursor: not-allowed; }
+
+    .form-success {
+      background: rgba(245,212,0,0.06);
+      border: 1px solid var(--yellow-dim);
+      border-radius: 4px;
+      padding: 14px 18px;
+      text-align: center;
+      color: var(--yellow);
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    .form-error-global {
+      background: rgba(233,83,107,0.06);
+      border: 1px solid #5c2a32;
+      border-radius: 4px;
+      padding: 10px 14px;
+      color: #e9536b;
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 28px 20px;
+      border-top: 1px solid #1e1e1e;
+      font-size: 10.5px;
+      color: #444;
+      letter-spacing: 0.5px;
+      line-height: 1.9;
+    }
+
+    footer .bats { color: var(--yellow); opacity: 0.5; letter-spacing: 2px; }
+    footer p.notice { max-width: 560px; margin: 10px auto 0; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="bat-logo">🦇</div>
+  <h1>Dark Knight Fan Log</h1>
+  <p class="tagline">Gotham City · Fan Art &amp; Thoughts</p>
+  <nav>
+    <a href="index.html">HOME</a>
+    <a href="blog.html">BLOG</a>
+    <a href="gallery.html">GALLERY</a>
+    <a href="about.html" class="active">ABOUT</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <div class="intro-card">
+    <h2>About</h2>
+    <p>
+      バットマンが好きすぎて作ったファンサイトです。正しい考察というより、「このシーンが好き」「この表情が忘れられない」という個人的な記録を中心に置いています。
+    </p>
+    <p>
+      イラストや漫画はこちらの本サイトにも掲載しているので、よければそちらも見ていただけると嬉しいです。
+    </p>
+  </div>
+
+  <div class="section">
+    <h2 class="section-head">Links</h2>
+    <div class="link-grid">
+
+      <a class="link-card" href="https://rookie.shonenjump.com/users/14728546961183734555" target="_blank" rel="noopener">
+        <div class="link-icon">📚</div>
+        <div class="link-text">
+          <span class="link-name">ジャンプルーキー</span>
+          <span class="link-desc">オリジナル漫画を掲載中</span>
+        </div>
+        <span class="link-arrow">›</span>
+      </a>
+
+      <a class="link-card" href="https://daysneo.com/author/Sam333333Sam/" target="_blank" rel="noopener">
+        <div class="link-icon">🌙</div>
+        <div class="link-text">
+          <span class="link-name">DaysNEO</span>
+          <span class="link-desc">漫画掲載サイト</span>
+        </div>
+        <span class="link-arrow">›</span>
+      </a>
+
+      <a class="link-card" href="https://www.pixiv.net/users/105728284" target="_blank" rel="noopener">
+        <div class="link-icon">🎨</div>
+        <div class="link-text">
+          <span class="link-name">Pixiv</span>
+          <span class="link-desc">二次創作はこちらに掲載</span>
+        </div>
+        <span class="link-arrow">›</span>
+      </a>
+
+      <a class="link-card" href="https://bsky.app/profile/azaleaazalea88.bsky.social" target="_blank" rel="noopener">
+        <div class="link-icon">🦋</div>
+        <div class="link-text">
+          <span class="link-name">Bluesky</span>
+          <span class="link-desc">近況・作品のお知らせ</span>
+        </div>
+        <span class="link-arrow">›</span>
+      </a>
+
+      <a class="link-card" href="https://kakuyomu.jp/users/azalea_azalea72" target="_blank" rel="noopener">
+        <div class="link-icon">✒️</div>
+        <div class="link-text">
+          <span class="link-name">カクヨム</span>
+          <span class="link-desc">小説を掲載中</span>
+        </div>
+        <span class="link-arrow">›</span>
+      </a>
+
+      <a class="link-card" href="https://www.youtube.com/@LilyPopins0512" target="_blank" rel="noopener">
+        <div class="link-icon">🎬</div>
+        <div class="link-text">
+          <span class="link-name">YouTube（リリポピ）</span>
+          <span class="link-desc">動画チャンネル</span>
+        </div>
+        <span class="link-arrow">›</span>
+      </a>
+
+      <a class="link-card" href="https://azaleacreativeroom888.github.io/" target="_blank" rel="noopener">
+        <div class="link-icon">🏠</div>
+        <div class="link-text">
+          <span class="link-name">Azalea Creative Room</span>
+          <span class="link-desc">他のサイトまとめ</span>
+        </div>
+        <span class="link-arrow">›</span>
+      </a>
+
+    </div>
+  </div>
+
+  <div class="section">
+    <h2 class="section-head">Contact</h2>
+
+    <div class="form-card">
+      <p class="form-intro">ご感想・ご質問などはこちらからどうぞ。Gmailで受け取り、返信いたします。</p>
+
+      <div data-fs-success class="form-success" style="display:none;">
+        ✉️ メッセージを送信しました。ありがとうございます！
+      </div>
+
+      <div data-fs-error class="form-error-global" style="display:none;"></div>
+
+      <form id="contact-form" action="https://formspree.io/f/maqvpvoz" method="POST">
+
+        <div class="form-group">
+          <label class="form-label" for="name">お名前</label>
+          <input class="form-input" type="text" id="name" name="name" placeholder="Azalea72" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="email">メールアドレス<span class="required">*</span></label>
+          <input class="form-input" type="email" id="email" name="email" data-fs-field placeholder="example@email.com" required>
+          <span data-fs-error="email" class="field-error"></span>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="message">メッセージ<span class="required">*</span></label>
+          <textarea class="form-textarea" id="message" name="message" data-fs-field placeholder="メッセージを入力してください…" rows="6" required></textarea>
+          <span data-fs-error="message" class="field-error"></span>
+        </div>
+
+        <button class="form-submit" type="submit" data-fs-submit-btn>
+          送信する
+        </button>
+
+      </form>
+    </div>
+  </div>
+
+</div>
+
+<footer>
+  <p class="bats">🦇 🦇 🦇</p>
+  <p class="notice">当サイトに掲載されている画像・文章・作品について、AI学習への利用、トレース、無断転載・転載、二次利用を禁止します。</p>
+  <p>© Dark Knight Fan Log</p>
+</footer>
+
+<script>
+  window.formspree = window.formspree || function () { (formspree.q = formspree.q || []).push(arguments); };
+  formspree('initForm', { formElement: '#contact-form', formId: 'maqvpvoz' });
+</script>
+<script src="https://unpkg.com/@formspree/ajax@1" defer></script>
+
+</body>
+</html>
