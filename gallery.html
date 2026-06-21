@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery | Dark Knight Fan Log</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black: #0a0a0a;
+      --card: #1a1a1a;
+      --yellow: #f5d400;
+      --gray: #444;
+      --lightgray: #888;
+      --text: #e0e0e0;
+      --text-sub: #999;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Noto Sans JP", sans-serif;
+      background-color: var(--black);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    header {
+      position: relative;
+      padding: 36px 20px 24px;
+      text-align: center;
+      border-bottom: 1px solid #222;
+      overflow: hidden;
+    }
+
+    header::after {
+      content: "";
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(245,212,0,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .bat-logo {
+      font-size: 48px;
+      line-height: 1;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 0 12px rgba(245,212,0,0.5));
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { filter: drop-shadow(0 0 8px rgba(245,212,0,0.4)); }
+      50%       { filter: drop-shadow(0 0 22px rgba(245,212,0,0.8)); }
+    }
+
+    header h1 {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 42px;
+      letter-spacing: 6px;
+      color: var(--yellow);
+      text-shadow: 0 0 30px rgba(245,212,0,0.3);
+    }
+
+    header p.tagline {
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--lightgray);
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      margin-top: 18px;
+    }
+
+    nav a {
+      color: var(--lightgray);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      bottom: -3px;
+      left: 0; right: 0;
+      height: 1px;
+      background: var(--yellow);
+      transform: scaleX(0);
+      transition: transform 0.2s;
+    }
+
+    nav a:hover { color: var(--yellow); }
+    nav a:hover::after { transform: scaleX(1); }
+    nav a.active { color: var(--yellow); }
+    nav a.active::after { transform: scaleX(1); }
+
+    /* ── Container ── */
+    .container {
+      position: relative;
+      z-index: 1;
+      padding: 48px 20px 60px;
+      max-width: 900px;
+      margin: auto;
+    }
+
+    .gallery-intro {
+      text-align: center;
+      font-size: 12px;
+      letter-spacing: 1px;
+      color: var(--text-sub);
+      margin-bottom: 36px;
+    }
+
+    /* ── Gallery grid (mixed illustration + manga, no separation) ── */
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .gallery-item {
+      position: relative;
+      border-radius: 4px;
+      overflow: hidden;
+      background: var(--card);
+      border: 1px solid #222;
+      aspect-ratio: 1;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.3s;
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.06);
+    }
+
+    /* placeholder for missing images */
+    .gallery-item .placeholder {
+      font-size: 48px;
+      opacity: 0.12;
+      transition: opacity 0.3s;
+    }
+
+    .gallery-item:hover .placeholder { opacity: 0.22; }
+
+    .gallery-item .overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 55%);
+      opacity: 0;
+      transition: opacity 0.3s;
+      display: flex;
+      align-items: flex-end;
+      padding: 10px 12px;
+    }
+
+    .gallery-item:hover .overlay { opacity: 1; }
+
+    .gallery-item .overlay span {
+      font-size: 10px;
+      letter-spacing: 1.5px;
+      color: var(--yellow);
+      text-transform: uppercase;
+    }
+
+    /* ── Lightbox ── */
+    .lightbox {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.92);
+      z-index: 100;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .lightbox.active {
+      display: flex;
+    }
+
+    .lightbox-content {
+      max-width: 90vw;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .lightbox-content img {
+      max-width: 100%;
+      max-height: 75vh;
+      border-radius: 4px;
+      border: 1px solid #333;
+    }
+
+    .lightbox-content .placeholder-large {
+      font-size: 120px;
+      opacity: 0.15;
+      width: 320px;
+      height: 320px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--card);
+      border: 1px solid #333;
+      border-radius: 4px;
+    }
+
+    .lightbox-caption {
+      margin-top: 16px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: var(--text-sub);
+      text-transform: uppercase;
+    }
+
+    .lightbox-close {
+      position: absolute;
+      top: 24px;
+      right: 32px;
+      font-size: 28px;
+      color: var(--lightgray);
+      cursor: pointer;
+      background: none;
+      border: none;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+
+    .lightbox-close:hover { color: var(--yellow); }
+
+    .lightbox-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 32px;
+      color: var(--lightgray);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 10px 16px;
+      transition: color 0.2s;
+    }
+
+    .lightbox-nav:hover { color: var(--yellow); }
+    .lightbox-prev { left: 10px; }
+    .lightbox-next { right: 10px; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 28px 20px;
+      border-top: 1px solid #1e1e1e;
+      font-size: 11px;
+      color: #444;
+      letter-spacing: 2px;
+    }
+
+    footer span { color: var(--yellow); opacity: 0.5; }
+
+    @media (max-width: 600px) {
+      .gallery { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="bat-logo">🦇</div>
+  <h1>Dark Knight Fan Log</h1>
+  <p class="tagline">Gotham City · Fan Art &amp; Thoughts</p>
+  <nav>
+    <a href="index.html">HOME</a>
+    <a href="blog.html">BLOG</a>
+    <a href="gallery.html" class="active">GALLERY</a>
+    <a href="about.html">ABOUT</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <p class="gallery-intro">illustration &amp; manga — まとめて置いてます</p>
+
+  <div class="gallery" id="gallery">
+    <div class="gallery-item" data-img="img1.jpg" data-caption="01">
+      <span class="placeholder">🦇</span>
+      <div class="overlay"><span>View</span></div>
+    </div>
+    <div class="gallery-item" data-img="img2.jpg" data-caption="02">
+      <span class="placeholder">🃏</span>
+      <div class="overlay"><span>View</span></div>
+    </div>
+    <div class="gallery-item" data-img="img3.jpg" data-caption="03">
+      <span class="placeholder">🌆</span>
+      <div class="overlay"><span>View</span></div>
+    </div>
+    <div class="gallery-item" data-img="img4.jpg" data-caption="04">
+      <span class="placeholder">🦇</span>
+      <div class="overlay"><span>View</span></div>
+    </div>
+    <div class="gallery-item" data-img="img5.jpg" data-caption="05">
+      <span class="placeholder">🃏</span>
+      <div class="overlay"><span>View</span></div>
+    </div>
+    <div class="gallery-item" data-img="img6.jpg" data-caption="06">
+      <span class="placeholder">🌆</span>
+      <div class="overlay"><span>View</span></div>
+    </div>
+  </div>
+
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose">&times;</button>
+  <button class="lightbox-nav lightbox-prev" id="lightboxPrev">&#10094;</button>
+  <div class="lightbox-content">
+    <img id="lightboxImg" src="" alt="">
+    <div class="lightbox-caption" id="lightboxCaption"></div>
+  </div>
+  <button class="lightbox-nav lightbox-next" id="lightboxNext">&#10095;</button>
+</div>
+
+<footer>
+  <p><span>🦇</span> &nbsp; © Dark Knight Fan Log &nbsp; <span>🦇</span></p>
+</footer>
+
+<script>
+  const items = Array.from(document.querySelectorAll('.gallery-item'));
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxCaption = document.getElementById('lightboxCaption');
+  let currentIndex = 0;
+
+  function openLightbox(index) {
+    currentIndex = index;
+    const item = items[index];
+    lightboxImg.src = item.dataset.img;
+    lightboxImg.alt = item.dataset.caption;
+    lightboxCaption.textContent = item.dataset.caption;
+    lightbox.classList.add('active');
+  }
+
+  function closeLightbox() {
+    lightbox.classList.remove('active');
+  }
+
+  function showNext() {
+    currentIndex = (currentIndex + 1) % items.length;
+    openLightbox(currentIndex);
+  }
+
+  function showPrev() {
+    currentIndex = (currentIndex - 1 + items.length) % items.length;
+    openLightbox(currentIndex);
+  }
+
+  items.forEach((item, i) => {
+    item.addEventListener('click', () => openLightbox(i));
+  });
+
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  document.getElementById('lightboxNext').addEventListener('click', showNext);
+  document.getElementById('lightboxPrev').addEventListener('click', showPrev);
+
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (!lightbox.classList.contains('active')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowRight') showNext();
+    if (e.key === 'ArrowLeft') showPrev();
+  });
+</script>
+
+</body>
+</html>
