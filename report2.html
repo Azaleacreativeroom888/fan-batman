@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>好きなキャラランキング | Dark Knight Fan Log</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@300;400;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --black: #0a0a0a;
+      --card: #1a1a1a;
+      --yellow: #f5d400;
+      --yellow-dim: #c9ab00;
+      --gray: #444;
+      --lightgray: #888;
+      --text: #e0e0e0;
+      --text-sub: #999;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Noto Sans JP", sans-serif;
+      background-color: var(--black);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 200px 200px;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.4;
+    }
+
+    header {
+      position: relative;
+      padding: 36px 20px 24px;
+      text-align: center;
+      border-bottom: 1px solid #222;
+      overflow: hidden;
+    }
+
+    header::after {
+      content: "";
+      position: absolute;
+      top: -60px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 320px;
+      height: 320px;
+      background: radial-gradient(circle, rgba(245,212,0,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .bat-logo {
+      font-size: 48px;
+      line-height: 1;
+      margin-bottom: 8px;
+      filter: drop-shadow(0 0 12px rgba(245,212,0,0.5));
+      animation: pulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { filter: drop-shadow(0 0 8px rgba(245,212,0,0.4)); }
+      50%       { filter: drop-shadow(0 0 22px rgba(245,212,0,0.8)); }
+    }
+
+    header h1 {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 42px;
+      letter-spacing: 6px;
+      color: var(--yellow);
+      text-shadow: 0 0 30px rgba(245,212,0,0.3);
+    }
+
+    header p.tagline {
+      font-size: 11px;
+      letter-spacing: 3px;
+      color: var(--lightgray);
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      margin-top: 18px;
+    }
+
+    nav a {
+      color: var(--lightgray);
+      text-decoration: none;
+      font-size: 12px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+      position: relative;
+    }
+
+    nav a::after {
+      content: "";
+      position: absolute;
+      bottom: -3px;
+      left: 0; right: 0;
+      height: 1px;
+      background: var(--yellow);
+      transform: scaleX(0);
+      transition: transform 0.2s;
+    }
+
+    nav a:hover { color: var(--yellow); }
+    nav a:hover::after { transform: scaleX(1); }
+
+    /* ── Container ── */
+    .container {
+      position: relative;
+      z-index: 1;
+      padding: 48px 20px 60px;
+      max-width: 720px;
+      margin: auto;
+    }
+
+    /* ── Page title ── */
+    .page-title {
+      margin-bottom: 48px;
+    }
+
+    .page-title .report-label {
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--yellow);
+      opacity: 0.7;
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .page-title h2 {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 36px;
+      letter-spacing: 5px;
+      color: var(--text);
+    }
+
+    .page-title p {
+      font-size: 12px;
+      color: var(--text-sub);
+      margin-top: 10px;
+      line-height: 1.8;
+    }
+
+    /* ── Ranking entry ── */
+    .entry {
+      display: grid;
+      grid-template-columns: 64px 1fr;
+      gap: 0 24px;
+      margin-bottom: 36px;
+      padding-bottom: 36px;
+      border-bottom: 1px solid #1c1c1c;
+      align-items: start;
+    }
+
+    .entry:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+      padding-bottom: 0;
+    }
+
+    /* rank number */
+    .rank {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 56px;
+      line-height: 1;
+      color: var(--yellow);
+      opacity: 0.18;
+      text-align: center;
+      padding-top: 4px;
+      letter-spacing: -2px;
+      transition: opacity 0.2s;
+    }
+
+    .entry:hover .rank { opacity: 0.35; }
+
+    /* top 3 highlight */
+    .entry.rank-1 .rank { opacity: 0.9; color: var(--yellow); font-size: 64px; }
+    .entry.rank-2 .rank { opacity: 0.55; color: #c0c0c0; }
+    .entry.rank-3 .rank { opacity: 0.45; color: #cd7f32; }
+
+    .entry-body { min-width: 0; }
+
+    /* ① 名前 */
+    .char-name {
+      font-family: "Bebas Neue", sans-serif;
+      font-size: 24px;
+      letter-spacing: 3px;
+      color: var(--text);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+
+    .char-name .char-sub {
+      font-family: "Noto Sans JP", sans-serif;
+      font-size: 11px;
+      font-weight: 400;
+      letter-spacing: 0;
+      color: var(--text-sub);
+    }
+
+    /* ② ③ rows */
+    .meta-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 8px;
+      font-size: 12px;
+      align-items: baseline;
+    }
+
+    .meta-label {
+      flex-shrink: 0;
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--yellow);
+      opacity: 0.7;
+      padding-top: 1px;
+      width: 44px;
+    }
+
+    .meta-value {
+      color: var(--text-sub);
+      line-height: 1.8;
+    }
+
+    .meta-row.impression .meta-value {
+      color: var(--text);
+      font-size: 13px;
+      line-height: 2;
+    }
+
+    .entry.no-rank {
+      grid-template-columns: 1fr;
+    }
+
+    /* ── Back link ── */
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 48px;
+      color: var(--lightgray);
+      text-decoration: none;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      transition: color 0.2s;
+    }
+
+    .back-link:hover { color: var(--yellow); }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center;
+      padding: 28px 20px;
+      border-top: 1px solid #1e1e1e;
+      font-size: 11px;
+      color: #444;
+      letter-spacing: 2px;
+    }
+
+    footer span { color: var(--yellow); opacity: 0.5; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="bat-logo">🦇</div>
+  <h1>Dark Knight Fan Log</h1>
+  <p class="tagline">Gotham City · Fan Art &amp; Thoughts</p>
+  <nav>
+    <a href="index.html">HOME</a>
+    <a href="blog.html">BLOG</a>
+    <a href="gallery.html">GALLERY</a>
+    <a href="about.html">ABOUT</a>
+  </nav>
+</header>
+
+<div class="container">
+
+  <div class="page-title">
+    <span class="report-label">Special Report</span>
+    <h2>好きなキャラランキング</h2>
+    <p>個人的な偏愛まとめ。正しさより「なんか好き」を大事にしてます。</p>
+  </div>
+
+  <!-- 1位 -->
+  <div class="entry rank-1">
+    <div class="rank">1</div>
+    <div class="entry-body">
+      <div class="char-name">
+        CHARACTER NAME
+        <span class="char-sub">キャラクター名</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-label">作品</span>
+        <span class="meta-value">作品名をここに</span>
+      </div>
+      <div class="meta-row impression">
+        <span class="meta-label">感想</span>
+        <span class="meta-value">感想をここに書く。なんで好きなのか、どのシーンが忘れられないのか。</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 2位 -->
+  <div class="entry rank-2">
+    <div class="rank">2</div>
+    <div class="entry-body">
+      <div class="char-name">
+        CHARACTER NAME
+        <span class="char-sub">キャラクター名</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-label">作品</span>
+        <span class="meta-value">作品名をここに</span>
+      </div>
+      <div class="meta-row impression">
+        <span class="meta-label">感想</span>
+        <span class="meta-value">感想をここに書く。なんで好きなのか、どのシーンが忘れられないのか。</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3位 -->
+  <div class="entry rank-3">
+    <div class="rank">3</div>
+    <div class="entry-body">
+      <div class="char-name">
+        CHARACTER NAME
+        <span class="char-sub">キャラクター名</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-label">作品</span>
+        <span class="meta-value">作品名をここに</span>
+      </div>
+      <div class="meta-row impression">
+        <span class="meta-label">感想</span>
+        <span class="meta-value">感想をここに書く。なんで好きなのか、どのシーンが忘れられないのか。</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4位以下 -->
+  <div class="entry no-rank">
+    <div class="entry-body">
+      <div class="char-name">
+        CHARACTER NAME
+        <span class="char-sub">キャラクター名</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-label">作品</span>
+        <span class="meta-value">作品名をここに</span>
+      </div>
+      <div class="meta-row impression">
+        <span class="meta-label">感想</span>
+        <span class="meta-value">感想をここに書く。なんで好きなのか、どのシーンが忘れられないのか。</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="entry no-rank">
+    <div class="entry-body">
+      <div class="char-name">
+        CHARACTER NAME
+        <span class="char-sub">キャラクター名</span>
+      </div>
+      <div class="meta-row">
+        <span class="meta-label">作品</span>
+        <span class="meta-value">作品名をここに</span>
+      </div>
+      <div class="meta-row impression">
+        <span class="meta-label">感想</span>
+        <span class="meta-value">感想をここに書く。なんで好きなのか、どのシーンが忘れられないのか。</span>
+      </div>
+    </div>
+  </div>
+
+  <a class="back-link" href="gallery.html">← Gallery に戻る</a>
+
+</div>
+
+<footer>
+  <p><span>🦇</span> &nbsp; © Dark Knight Fan Log &nbsp; <span>🦇</span></p>
+</footer>
+
+</body>
+</html>
